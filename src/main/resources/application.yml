@@ -1,0 +1,54 @@
+server:
+  port: 8043
+
+logging:
+  level:
+    org:
+      springframework:
+        web: INFO
+        security: INFO
+    vrs.rental_ms.integration: DEBUG
+
+spring:
+  application:
+    name: rental_ms
+  data:
+    mongodb:
+      uri: mongodb://${MONGODB_USER:admin}:${MONGODB_PASSWORD:adminSecret123}@${MONGODB_HOST:localhost}:${MONGODB_PORT:27020}/${MONGODB_NAME:vrs_rental}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  output:
+    ansi:
+      enabled: always
+
+management:
+  server:
+    port: 8043
+  health:
+    defaults:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+rental-ms:
+  integration:
+    security-client:
+      service-id: rental-ms@vrs.com
+      service-secret: vrs-rental-ms@rental_secret
+      base-url: ${SECURITY_BASE_URL:http://localhost:8041}
+      validate-token: ${VALIDATE_TOKEN_URL:/auth/validate}
+      generate-token-service: ${GENERATE_TOKEN_URL:/auth/login/service}
+  aws:
+    s3:
+      accessKey: ${AWS_ACCESS_KEY_ID:myKey}
+      secretKey: ${AWS_SECRET_ACCESS_KEY:mykey}
+      region: ${AWS_REGION:us-west-2}
+      auto: false
+      endpoint: ${AWS_S3_ENDPOINT:http://s3.localhost.localstack.cloud:4567}
+      bucketName: ${AWS_S3_BUCKET:rentals-bucket}
+      exposureEndpoint: ${AWS_S3_EXPOSURE_ENDPOINT:http://s3.localhost.localstack.cloud:4567}

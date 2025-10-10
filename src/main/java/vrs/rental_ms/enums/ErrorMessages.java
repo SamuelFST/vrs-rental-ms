@@ -16,7 +16,9 @@ public enum ErrorMessages {
     VEHICLE_BRAND_NOT_FOUND("VehicleBrand not found with given ID"),
     VEHICLE_MODEL_NOT_FOUND("VehicleModel not found with given ID"),
     VEHICLE_VERSION_NOT_FOUND("VehicleVersion not found with given ID"),
-    VEHICLE_NOT_FOUND("Vehicle not found with given ID");
+    VEHICLE_NOT_FOUND("Vehicle not found with given ID"),
+    VEHICLE_NOT_AVAILABLE("Vehicle not available for rental"),
+    RENTAL_NOT_FOUND("Rental not found with given ID");
 
     private final String message;
 }

@@ -1,20 +1,19 @@
 package vrs.rental_ms.integration;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import vrs.rental_ms.dto.auth.LoginResponseDTO;
-import vrs.rental_ms.dto.auth.LoginServiceRequestDTO;
-import vrs.rental_ms.dto.token.TokenDataDTO;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import vrs.rental_ms.dto.user.UserAddressResponseDTO;
+import vrs.rental_ms.dto.user.UserResponseDTO;
+import vrs.rental_ms.interceptor.SecurityTokenInterceptor;
 
-@FeignClient(name = "SecurityClient", url = "${rental-ms.integration.security-client.base-url}")
+@FeignClient(name = "SecurityClient", url = "${rental-ms.integration.security-client.base-url}", configuration = SecurityTokenInterceptor.class)
 public interface SecurityClient {
 
-    @PostMapping("${rental-ms.integration.security-client.validate-token}")
-    TokenDataDTO validateToken(@RequestHeader final String accessToken);
+    @GetMapping("${rental-ms.integration.security-client.find-user-by-id}")
+    UserResponseDTO findUserById(@PathVariable final Long userId);
 
-    @PostMapping("${rental-ms.integration.security-client.generate-token-service}")
-    LoginResponseDTO generateTokenForService(@RequestBody final LoginServiceRequestDTO loginServiceRequestDTO);
+    @GetMapping("${rental-ms.integration.security-client.find-user-address-by-id}")
+    UserAddressResponseDTO findUserAddressById(@PathVariable final Long userId, @PathVariable final Long addressId);
 
 }

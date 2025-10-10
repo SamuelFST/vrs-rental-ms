@@ -2,10 +2,8 @@ package vrs.rental_ms.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import vrs.rental_ms.config.properties.SecurityProperties;
-import vrs.rental_ms.dto.auth.LoginResponseDTO;
-import vrs.rental_ms.dto.auth.LoginServiceRequestDTO;
-import vrs.rental_ms.dto.token.TokenDataDTO;
+import vrs.rental_ms.dto.user.UserAddressResponseDTO;
+import vrs.rental_ms.dto.user.UserResponseDTO;
 import vrs.rental_ms.integration.SecurityClient;
 
 @Service
@@ -13,16 +11,13 @@ import vrs.rental_ms.integration.SecurityClient;
 public class SecurityService {
 
     private final SecurityClient securityClient;
-    private final SecurityProperties securityProperties;
 
-    public TokenDataDTO validateToken(final String accessToken) {
-        return securityClient.validateToken(accessToken);
+    public UserResponseDTO findUserById(final Long userId) {
+        return securityClient.findUserById(userId);
     }
 
-    public LoginResponseDTO generateTokenForService() {
-        return securityClient.generateTokenForService(new LoginServiceRequestDTO()
-                .setServiceId(securityProperties.getServiceId())
-                .setServiceSecret(securityProperties.getServiceSecret()));
+    public UserAddressResponseDTO findUserAddressById(final Long userId, final Long addressId) {
+        return securityClient.findUserAddressById(userId, addressId);
     }
 
 }

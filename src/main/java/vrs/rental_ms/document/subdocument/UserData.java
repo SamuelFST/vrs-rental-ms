@@ -20,10 +20,10 @@ public class UserData {
     @NotBlank(message = "The user name must be informed")
     private String email;
 
-    @NotBlank(message = "The user document number must be informed")
+    @NotBlank(message = "The document number must be informed")
     private String documentNumber;
 
-    @NotNull(message = "The user documentType must be informed")
+    @NotNull(message = "The documentType must be informed")
     private DocumentType documentType;
 
     @NotNull(message = "The userType must be informed")

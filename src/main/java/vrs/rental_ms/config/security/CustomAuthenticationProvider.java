@@ -9,7 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
-import vrs.rental_ms.service.SecurityService;
+import vrs.rental_ms.service.SecurityAuthService;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import static vrs.rental_ms.enums.ErrorMessages.TOKEN_NOT_INFORMED;
 @AllArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    private final SecurityService securityService;
+    private final SecurityAuthService securityAuthService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -30,7 +30,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException(TOKEN_NOT_INFORMED.getMessage());
         }
 
-        var tokenResponse = securityService.validateToken(accessToken);
+        var tokenResponse = securityAuthService.validateToken(accessToken);
         var authorities = List.of(new SimpleGrantedAuthority("%s%s".formatted(ROLE_PREFIX, tokenResponse.getGroup())));
 
         return new UsernamePasswordAuthenticationToken(

@@ -2,21 +2,19 @@ package vrs.rental_ms.interceptor;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
-import vrs.rental_ms.service.SecurityService;
+import vrs.rental_ms.service.SecurityAuthService;
 
-@Component
 public class SecurityTokenInterceptor implements RequestInterceptor {
 
-    private final SecurityService securityService;
+    private final SecurityAuthService securityAuthService;
 
-    public SecurityTokenInterceptor(@Lazy SecurityService securityService) {
-        this.securityService = securityService;
+    public SecurityTokenInterceptor(SecurityAuthService securityAuthService) {
+        this.securityAuthService = securityAuthService;
     }
 
     @Override
     public void apply(RequestTemplate template) {
-        template.header("accessToken", securityService.generateTokenForService().getAccessToken());
+        template.header("accessToken", securityAuthService.generateTokenForService().getAccessToken());
     }
+
 }

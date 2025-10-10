@@ -3,6 +3,7 @@ package vrs.rental_ms.document;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,9 +13,11 @@ import vrs.rental_ms.enums.PaymentStatus;
 import vrs.rental_ms.enums.RentalStatus;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
 @Document(collection = "rentals")
 public class Rental {
@@ -33,7 +36,7 @@ public class Rental {
 
     private BigDecimal returnedValue;
 
-    @NotNull(message = "The finalPrice is required")
+    @NotNull(message = "The paymentStatus is required")
     private PaymentStatus paymentStatus;
 
     @NotNull(message = "The startDate is required")
@@ -53,5 +56,11 @@ public class Rental {
 
     @NotNull(message = "The ccLastNumbers is required")
     private String ccLastNumbers;
+
+    @NotNull(message = "The addressId is required")
+    private Long addressId;
+
+    @NotNull(message = "The createdAt is required")
+    private Date createdAt;
 
 }

@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties("rental-ms.integration.security-client")
+@ConfigurationProperties("rental-ms.integration.security-auth-client")
 public class SecurityProperties {
 
     private String serviceId;

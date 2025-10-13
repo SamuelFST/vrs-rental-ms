@@ -10,10 +10,16 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfiguration {
 
     public static final String PROCESS_RENTAL_QUEUE = "vrs-rental-ms.rental.process";
+    public static final String FINISH_RENTAL_QUEUE = "vrs-rental-ms.rental.finish";
 
     @Bean
     public Queue processRentalQueue() {
         return new Queue(PROCESS_RENTAL_QUEUE, true);
+    }
+
+    @Bean
+    public Queue finishRentalQueue() {
+        return new Queue(FINISH_RENTAL_QUEUE, true);
     }
 
     @Bean

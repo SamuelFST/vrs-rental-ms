@@ -4,11 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import vrs.rental_ms.config.security.IsAdmin;
 import vrs.rental_ms.config.security.IsClient;
+import vrs.rental_ms.dto.rental.RentalFinishRequestDTO;
 import vrs.rental_ms.dto.rental.RentalRequestDTO;
 import vrs.rental_ms.dto.rental.RentalResponseDTO;
 import vrs.rental_ms.service.RentalService;
@@ -28,6 +27,14 @@ public class RentalController {
     @Operation(summary = "Create a new Rental")
     public RentalResponseDTO createRental(@Valid @RequestBody RentalRequestDTO rentalRequestDTO) {
         return rentalService.createRental(rentalRequestDTO);
+    }
+
+    @IsAdmin
+    @PutMapping("/{id}")
+    @Operation(summary = "Finish a Rental")
+    public RentalResponseDTO finishRental(@PathVariable String id,
+                                          @Valid @RequestBody RentalFinishRequestDTO rentalFinishRequestDTO) {
+        return rentalService.finishRental(id, rentalFinishRequestDTO);
     }
 
 }

@@ -10,7 +10,8 @@ import java.util.stream.Stream;
 public enum RentalStatus {
     APPROVED(PaymentStatus.APPROVED),
     PENDING(PaymentStatus.PROCESSING),
-    CLOSED(null),
+    PROCESSING_CLOSING(null),
+    CLOSED(PaymentStatus.REFUNDED),
     CANCELLED(PaymentStatus.REFUSED);
 
     private final PaymentStatus associatedPaymentStatus;

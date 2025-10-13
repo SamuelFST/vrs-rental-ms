@@ -19,4 +19,7 @@ public class PaymentResponseDTO {
     @JsonProperty(value = "card_last_digits")
     private String cardLastDigits;
 
+    @JsonProperty(value = "card_last_digits")
+    private String transactionId;
+
 }

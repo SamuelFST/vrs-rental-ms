@@ -6,5 +6,6 @@ import lombok.Getter;
 public enum PaymentStatus {
     APPROVED,
     PROCESSING,
+    REFUNDED,
     REFUSED
 }

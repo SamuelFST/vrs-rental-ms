@@ -3,9 +3,7 @@ package vrs.rental_ms.mapper;
 import org.mapstruct.*;
 import vrs.rental_ms.document.Rental;
 import vrs.rental_ms.document.subdocument.VehicleData;
-import vrs.rental_ms.dto.rental.RentalMessageDTO;
-import vrs.rental_ms.dto.rental.RentalRequestDTO;
-import vrs.rental_ms.dto.rental.RentalResponseDTO;
+import vrs.rental_ms.dto.rental.*;
 import vrs.rental_ms.dto.user.UserResponseDTO;
 import vrs.rental_ms.dto.vehicle.VehicleResponseDTO;
 
@@ -60,5 +58,8 @@ public interface RentalMapper {
                                         BigDecimal finalPrice,
                                         RentalRequestDTO rentalRequestDTO,
                                         UserResponseDTO user);
+
+    RentalFinishMessageDTO toRentalFinishMessageDTO(String rentalId,
+                                                    RentalFinishRequestDTO rentalFinishRequestDTO);
 
 }

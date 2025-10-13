@@ -2,6 +2,8 @@ package vrs.rental_ms.constants;
 
 import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
+
 public class Constants {
 
     public static final String ROLE_PREFIX = "ROLE_";
@@ -18,5 +20,8 @@ public class Constants {
     public static final HttpStatus UNAUTHORIZED = HttpStatus.UNAUTHORIZED;
     public static final HttpStatus FORBIDDEN = HttpStatus.FORBIDDEN;
     public static final HttpStatus NOT_FOUND = HttpStatus.NOT_FOUND;
+
+    public static final BigDecimal BIG_DECIMAL_ZERO = BigDecimal.ZERO;
+    public static final BigDecimal PAYMENT_FACTOR = new BigDecimal(2L);
 
 }

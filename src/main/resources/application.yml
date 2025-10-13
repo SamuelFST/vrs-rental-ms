@@ -55,9 +55,11 @@ rental-ms:
       base-url: ${VEHICLE_BASE_URL:http://localhost:8042}
       find-vehicle-by-id: /vehicles/{vehicleId}
       update-vehicle-status-by-id: /vehicles/{id}/status/{vehicleStatus}
+      update-vehicle-rental-data: /vehicles/{id}/rental-data
     payment-client:
       base-url: ${PAYMENT_BASE_URL:http://localhost:9999}
-      pay-rental: /pay
+      pay-rental: /transactions
+      refund-rental: /transactions/{transactionId}/refund
   aws:
     s3:
       accessKey: ${AWS_ACCESS_KEY_ID:myKey}
@@ -71,3 +73,4 @@ rental-ms:
     api-key: ${PAYMENT_API_KEY:my-api-key}
     allowed-payment-method: credit_card
     allowed-installments: 1
+    late-fee-multiplier: 1.20

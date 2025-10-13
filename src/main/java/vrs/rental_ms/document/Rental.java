@@ -39,6 +39,8 @@ public class Rental {
     @NotNull(message = "The paymentStatus is required")
     private PaymentStatus paymentStatus;
 
+    private String paymentTransactionId;
+
     @NotNull(message = "The startDate is required")
     private Long startDate;
 
@@ -62,5 +64,7 @@ public class Rental {
 
     @NotNull(message = "The createdAt is required")
     private Date createdAt;
+
+    private Date updatedAt;
 
 }

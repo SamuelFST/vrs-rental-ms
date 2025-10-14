@@ -4,9 +4,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import vrs.rental_ms.config.security.IsAdmin;
 import vrs.rental_ms.config.security.IsClient;
+import vrs.rental_ms.dto.rental.RentalFilterDTO;
 import vrs.rental_ms.dto.rental.RentalFinishRequestDTO;
 import vrs.rental_ms.dto.rental.RentalRequestDTO;
 import vrs.rental_ms.dto.rental.RentalResponseDTO;
@@ -21,6 +25,21 @@ public class RentalController {
     public static final String RENTAL_ENDPOINT = "/rentals";
 
     private final RentalService rentalService;
+
+    @IsClient
+    @GetMapping
+    @Operation(summary = "Search all Rentals")
+    public Page<RentalResponseDTO> findAllRentals(RentalFilterDTO rentalFilterDTO,
+                                                  @PageableDefault Pageable pageable) {
+        return rentalService.findAllRentals(rentalFilterDTO, pageable);
+    }
+
+    @IsClient
+    @GetMapping("/{id}")
+    @Operation(summary = "Search for a specific Rental by it's Rental ID")
+    public RentalResponseDTO findRentalById(@PathVariable String id) {
+        return rentalService.findRentalById(id);
+    }
 
     @IsClient
     @PostMapping

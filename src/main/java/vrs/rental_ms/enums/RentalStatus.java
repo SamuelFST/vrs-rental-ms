@@ -12,7 +12,8 @@ public enum RentalStatus {
     PENDING(PaymentStatus.PROCESSING),
     PROCESSING_CLOSING(null),
     CLOSED(PaymentStatus.REFUNDED),
-    CANCELLED(PaymentStatus.REFUSED);
+    CANCELLED(PaymentStatus.REFUSED),
+    ERROR(null);
 
     private final PaymentStatus associatedPaymentStatus;
 

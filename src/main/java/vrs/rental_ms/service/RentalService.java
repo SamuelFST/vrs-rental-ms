@@ -3,6 +3,12 @@ package vrs.rental_ms.service;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import vrs.rental_ms.document.Rental;
 import vrs.rental_ms.dto.payment.PaymentResponseDTO;
@@ -16,12 +22,15 @@ import vrs.rental_ms.exception.NotFoundException;
 import vrs.rental_ms.mapper.RentalMapper;
 import vrs.rental_ms.queue.RentalProducer;
 import vrs.rental_ms.repository.RentalRepository;
+import vrs.rental_ms.util.UserSecurityUtil;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static vrs.rental_ms.constants.Constants.BIG_DECIMAL_ZERO;
@@ -41,6 +50,20 @@ public class RentalService {
     private final RentalMapper rentalMapper;
     private final RentalProducer rentalProducer;
     private final PaymentService paymentService;
+    private final MongoTemplate mongoTemplate;
+
+    public Page<RentalResponseDTO> findAllRentals(final RentalFilterDTO rentalFilterDTO,
+                                                  Pageable pageable) {
+        var query = this.buildRentalsQuery(rentalFilterDTO, pageable);
+        var rentals = mongoTemplate.find(query, Rental.class);
+        var total = mongoTemplate.count(query.skip(0).limit(0), Rental.class);
+
+        return new PageImpl<>(rentalMapper.toRentalResponseDTOList(rentals), pageable, total);
+    }
+
+    public RentalResponseDTO findRentalById(final String rentalId) {
+        return rentalMapper.toRentalResponseDTO(this.findRentalDocumentById(rentalId));
+    }
 
     public RentalResponseDTO createRental(final RentalRequestDTO rentalRequestDTO) {
         var vehicle = getRentalVehicle(rentalRequestDTO.getVehicleId());
@@ -74,7 +97,7 @@ public class RentalService {
         var userAddress = securityService.findUserAddressById(rentalMessageDTO.getUser().getId(), rentalMessageDTO.getAddressId());
         var paymentResponseDTO = paymentService.processPayment(rentalMessageDTO, userAddress);
 
-        var rentalStatus = this.updateRentalStatusFromPayment(rentalMessageDTO.getRentalId(), paymentResponseDTO, null, null);
+        var rentalStatus = this.updateRentalStatusFromPayment(rentalMessageDTO.getRentalId(), paymentResponseDTO, null, null, null);
         this.updateVehicleStatus(rentalMessageDTO.getVehicleId(), rentalStatus, null);
     }
 
@@ -83,18 +106,26 @@ public class RentalService {
         var returnedValue = this.getReturnedValue(rental.getEndDate(), rentalFinishMessageDTO.getReceivedBackDate(), rental.getFinalPrice());
 
         var rentalStatus = this.updateRentalStatusFromPayment(rental.getId(),
-                    returnedValue.compareTo(BIG_DECIMAL_ZERO) > 0 ?
-                            paymentService.refundPayment(returnedValue, rental.getPaymentTransactionId()) : null,
-                    rentalFinishMessageDTO.getRentalKmDriven(),
-                    returnedValue);
+                returnedValue.compareTo(BIG_DECIMAL_ZERO) > 0 ?
+                        paymentService.refundPayment(returnedValue, rental.getPaymentTransactionId()) : null,
+                rentalFinishMessageDTO.getRentalKmDriven(),
+                returnedValue,
+                rentalFinishMessageDTO.getReceivedBackDate());
 
         this.updateVehicleStatus(rental.getVehicleData().getId(), rentalStatus, rentalFinishMessageDTO.getRentalKmDriven());
+    }
+
+    public void updateRentalWithError(final String rentalId) {
+        rentalRepository.save(this.findRentalDocumentById(rentalId)
+                .setStatus(RentalStatus.ERROR)
+                .setUpdatedAt(new Date()));
     }
 
     private RentalStatus updateRentalStatusFromPayment(final String rentalId,
                                                        @Nullable final PaymentResponseDTO paymentResponseDTO,
                                                        final BigDecimal rentalKmDriven,
-                                                       final BigDecimal returnedValue) {
+                                                       final BigDecimal returnedValue,
+                                                       final Long receivedBackDate) {
         var rental = this.findRentalDocumentById(rentalId);
 
         var rentalStatus = Optional.ofNullable(paymentResponseDTO)
@@ -112,6 +143,7 @@ public class RentalService {
         });
         Optional.ofNullable(rentalKmDriven).ifPresent(rental::setRentalKmDriven);
         Optional.ofNullable(returnedValue).ifPresent(rental::setReturnedValue);
+        Optional.ofNullable(receivedBackDate).ifPresent(rental::setReceivedBackDate);
 
         rentalRepository.save(rental);
 
@@ -134,7 +166,10 @@ public class RentalService {
     }
 
     private UserResponseDTO getRentalUser(final Long userId) {
-        return securityService.findUserById(userId);
+        var userResponseDTO = securityService.findUserById(userId);
+        UserSecurityUtil.currentUserIsTheResourceOwner(userResponseDTO.getEmail());
+
+        return userResponseDTO;
     }
 
     private BigDecimal getFinalPrice(final BigDecimal originalPrice, final Long rentalStartDate, final Long rentalEndDate) {
@@ -152,6 +187,32 @@ public class RentalService {
         var firstDate = Instant.ofEpochMilli(startDate).atZone(ZoneId.systemDefault()).toLocalDate();
         var secondDate = Instant.ofEpochMilli(endDate).atZone(ZoneId.systemDefault()).toLocalDate();
         return ChronoUnit.DAYS.between(firstDate, secondDate);
+    }
+
+    private Query buildRentalsQuery(final RentalFilterDTO rentalFilterDTO, final Pageable pageable) {
+        var query = new Query();
+        List<Criteria> criterias = new ArrayList<>();
+
+        var emailFilter = Boolean.TRUE.equals(UserSecurityUtil.currentUserIsAdmin()) ?
+                rentalFilterDTO.getEmail() : UserSecurityUtil.getCurrentUserEmail();
+
+        Optional.ofNullable(emailFilter)
+                .ifPresent(email -> criterias.add(Criteria.where("userData.email").regex(emailFilter, "i")));
+
+        Optional.ofNullable(rentalFilterDTO.getStatus())
+                .ifPresent(status -> criterias.add(Criteria.where("status").is(rentalFilterDTO.getStatus())));
+
+        Optional.ofNullable(rentalFilterDTO.getLicensePlate())
+                .ifPresent(licensePlate -> criterias.add(Criteria.where("vehicleData.licensePlate").regex(rentalFilterDTO.getLicensePlate(), "i")));
+
+
+        if (Boolean.FALSE.equals(criterias.isEmpty())) {
+            return query
+                    .addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[0])))
+                    .with(pageable);
+        }
+
+        return query.with(pageable);
     }
 
 }

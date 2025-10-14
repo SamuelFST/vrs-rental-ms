@@ -36,4 +36,8 @@ public class UserSecurityUtil {
         }
     }
 
+    public String getCurrentUserEmail() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+    }
+
 }

@@ -9,6 +9,7 @@ import vrs.rental_ms.dto.vehicle.VehicleResponseDTO;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Mapper(componentModel = "spring", imports = { Date.class })
 public interface RentalMapper {
@@ -48,6 +49,8 @@ public interface RentalMapper {
                                   BigDecimal finalPrice);
 
     RentalResponseDTO toRentalResponseDTO(Rental rental);
+
+    List<RentalResponseDTO> toRentalResponseDTOList(List<Rental> rental);
 
     @Mapping(target = "rentalId", source = "rental.id")
     @Mapping(target = "totalPrice", source = "finalPrice")

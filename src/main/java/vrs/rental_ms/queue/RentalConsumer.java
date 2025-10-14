@@ -25,6 +25,7 @@ public class RentalConsumer {
         try {
             rentalService.processRental(message);
         } catch (Exception ex) {
+            rentalService.updateRentalWithError(message.getRentalId());
             log.error("Exception occurred when processing rental {}: {}", message.getRentalId(), ex.getMessage(), ex);
         }
     }
@@ -36,6 +37,7 @@ public class RentalConsumer {
         try {
             rentalService.processRentalFinish(message);
         } catch (Exception ex) {
+            rentalService.updateRentalWithError(message.getRentalId());
             log.error("Exception occurred when finishing rental {}: {}", message.getRentalId(), ex.getMessage(), ex);
         }
     }

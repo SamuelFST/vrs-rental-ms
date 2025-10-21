@@ -20,6 +20,7 @@ import vrs.rental_ms.enums.VehicleStatus;
 import vrs.rental_ms.exception.BadRequestException;
 import vrs.rental_ms.exception.NotFoundException;
 import vrs.rental_ms.mapper.RentalMapper;
+import vrs.rental_ms.queue.FileProducer;
 import vrs.rental_ms.queue.RentalProducer;
 import vrs.rental_ms.repository.RentalRepository;
 import vrs.rental_ms.util.UserSecurityUtil;
@@ -51,6 +52,7 @@ public class RentalService {
     private final RentalProducer rentalProducer;
     private final PaymentService paymentService;
     private final MongoTemplate mongoTemplate;
+    private final FileProducer fileProducer;
 
     public Page<RentalResponseDTO> findAllRentals(final RentalFilterDTO rentalFilterDTO,
                                                   Pageable pageable) {
@@ -113,12 +115,17 @@ public class RentalService {
                 rentalFinishMessageDTO.getReceivedBackDate());
 
         this.updateVehicleStatus(rental.getVehicleData().getId(), rentalStatus, rentalFinishMessageDTO.getRentalKmDriven());
+        fileProducer.sendToGenerateRentalFile(new RentalFileMessageDTO().setRentalId(rental.getId()));
     }
 
     public void updateRentalWithError(final String rentalId) {
         rentalRepository.save(this.findRentalDocumentById(rentalId)
                 .setStatus(RentalStatus.ERROR)
                 .setUpdatedAt(new Date()));
+    }
+
+    public void updateRentalWithGeneratedContract(final String rentalId, final String filename) {
+        rentalRepository.save(this.findRentalDocumentById(rentalId).setGeneratedContract(filename));
     }
 
     private RentalStatus updateRentalStatusFromPayment(final String rentalId,

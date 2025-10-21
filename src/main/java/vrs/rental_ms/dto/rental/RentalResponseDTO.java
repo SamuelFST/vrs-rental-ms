@@ -27,5 +27,6 @@ public class RentalResponseDTO {
     private String ccLastNumbers;
     private Long addressId;
     private Date createdAt;
+    private Date updatedAt;
 
 }

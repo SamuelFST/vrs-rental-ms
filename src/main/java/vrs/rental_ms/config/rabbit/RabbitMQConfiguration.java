@@ -11,6 +11,7 @@ public class RabbitMQConfiguration {
 
     public static final String PROCESS_RENTAL_QUEUE = "vrs-rental-ms.rental.process";
     public static final String FINISH_RENTAL_QUEUE = "vrs-rental-ms.rental.finish";
+    public static final String FILE_RENTAL_QUEUE = "vrs-rental-ms.file.rental";
 
     @Bean
     public Queue processRentalQueue() {
@@ -20,6 +21,11 @@ public class RabbitMQConfiguration {
     @Bean
     public Queue finishRentalQueue() {
         return new Queue(FINISH_RENTAL_QUEUE, true);
+    }
+
+    @Bean
+    public Queue fileRentalQueue() {
+        return new Queue(FILE_RENTAL_QUEUE, true);
     }
 
     @Bean

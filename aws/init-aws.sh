@@ -2,7 +2,7 @@
 
 check_service() {
     echo "Verifying if Localstack S3 is ready..."
-    local url="http://localhost:4567/health"
+    local url="http://localhost:4566/health"
     local max_attempts=30
     local attempt=0
 
@@ -24,6 +24,6 @@ check_service || exit 1
 
 echo "Starting S3 Bucket Setup"
 
-awslocal s3 mb s3://rentals-bucket --endpoint-url http://localhost:4567
+awslocal s3 mb s3://rentals-bucket --endpoint-url http://localhost:4566
 
 echo "S3 Bucket Setup Complete."

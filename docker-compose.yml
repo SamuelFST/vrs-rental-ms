@@ -1,0 +1,65 @@
+version: '3'
+services:
+#  vrs-rental-ms:
+#    container_name: vrs-rental-ms
+#    build: './'
+#    depends_on:
+#      - vrs-rental-mongo
+#      - vrs-rabbitmq
+#      - vrs-rental-s3
+#    environment:
+#    networks:
+#      - vrs-network
+#    ports:
+#      - 8043:8043
+
+  vrs-rental-mongo:
+    image: mongo:latest
+    container_name: vrs-rental-mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=adminSecret123
+      - MONGO_INITDB_DATABASE=vrs_rental
+    restart: always
+    ports:
+      - 27027:27017
+    networks:
+      - vrs-network
+
+  vrs-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: vrs-rabbitmq
+    hostname: vrs-rabbitmq
+    networks:
+      - vrs-network
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - 5672:5672
+      - 25676:25676
+      - 15672:15672
+
+  vrs-rental-s3:
+    image: localstack/localstack
+    container_name: vrs-rental-s3
+    ports:
+      - "4567:4566"
+      - "8056:8080"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - AWS_ACCESS_KEY_ID=myKey
+      - AWS_SECRET_ACCESS_KEY=myKey
+      - AWS_REGION=us-west-2
+    volumes:
+      - ./tmp/localstack:/tmp/localstack
+      - ./aws:/etc/localstack/init/ready.d
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - vrs-network
+
+networks:
+  vrs-network:
+    external: true

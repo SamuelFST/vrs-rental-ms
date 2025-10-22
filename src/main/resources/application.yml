@@ -1,0 +1,76 @@
+server:
+  port: 8043
+
+logging:
+  level:
+    org:
+      springframework:
+        web: INFO
+        security: INFO
+    vrs.rental_ms.integration: DEBUG
+
+spring:
+  application:
+    name: rental_ms
+  data:
+    mongodb:
+      uri: mongodb://${MONGODB_USER:admin}:${MONGODB_PASSWORD:adminSecret123}@${MONGODB_HOST:localhost}:${MONGODB_PORT:27027}/${MONGODB_NAME:vrs_rental}?authSource=admin
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+  output:
+    ansi:
+      enabled: always
+
+management:
+  server:
+    port: 8043
+  health:
+    defaults:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+rental-ms:
+  integration:
+    security-auth-client:
+      service-id: ${RENTAL_SERVICE_ID:rental-ms@vrs.com}
+      service-secret: ${RENTAL_SERVICE_SECRET:vrs-rental-ms@rental_secret}
+      base-url: ${SECURITY_BASE_URL:http://localhost:8041/auth}
+      validate-token: /validate
+      generate-token-service: /login/service
+    security-client:
+      base-url: ${SECURITY_BASE_URL:http://localhost:8041}
+      find-user-by-id: /users/{userId}
+      find-user-address-by-id: /users/{userId}/addresses/{addressId}
+    vehicle-client:
+      base-url: ${VEHICLE_BASE_URL:http://localhost:8042}
+      find-vehicle-by-id: /vehicles/{vehicleId}
+      update-vehicle-status-by-id: /vehicles/{id}/status/{vehicleStatus}
+      update-vehicle-rental-data: /vehicles/{id}/rental-data
+    payment-client:
+      base-url: ${PAYMENT_BASE_URL:http://localhost:9999}
+      pay-rental: /transactions
+      refund-rental: /transactions/{transactionId}/refund
+  aws:
+    s3:
+      accessKey: ${AWS_ACCESS_KEY_ID:myKey}
+      secretKey: ${AWS_SECRET_ACCESS_KEY:mykey}
+      region: ${AWS_REGION:us-west-2}
+      auto: false
+      endpoint: ${AWS_S3_ENDPOINT:http://s3.localhost.localstack.cloud:4567}
+      bucketName: ${AWS_S3_BUCKET:rentals-bucket}
+      exposureEndpoint: ${AWS_S3_EXPOSURE_ENDPOINT:http://s3.localhost.localstack.cloud:4567}
+  payment:
+    api-key: ${PAYMENT_API_KEY:my-api-key}
+    allowed-payment-method: credit_card
+    allowed-installments: 1
+    late-fee-multiplier: 1.20

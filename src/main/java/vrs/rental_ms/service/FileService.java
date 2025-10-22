@@ -8,7 +8,9 @@ import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import vrs.rental_ms.dto.file.FileDataDTO;
 import vrs.rental_ms.dto.rental.RentalFileMessageDTO;
 import vrs.rental_ms.dto.rental.RentalResponseDTO;
 
@@ -27,6 +29,18 @@ public class FileService {
 
     private final RentalService rentalService;
     private final S3Service s3Service;
+
+    public FileDataDTO getRentalPdfDownload(final String rentalId) {
+        var rental = rentalService.findRentalDocumentById(rentalId);
+        var fileStream = s3Service.downloadFile(rental.getGeneratedContract());
+        var fileSize = s3Service.getFileSize(rental.getGeneratedContract());
+
+        return new FileDataDTO()
+                .setInputStream(fileStream)
+                .setFileSize(fileSize)
+                .setFilename(rental.getGeneratedContract())
+                .setContentType(MediaType.APPLICATION_PDF);
+    }
 
     public void generateRentalFile(final RentalFileMessageDTO rentalFileMessageDTO) {
         var rental = rentalService.findRentalById(rentalFileMessageDTO.getRentalId());

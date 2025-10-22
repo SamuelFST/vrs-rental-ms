@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import vrs.rental_ms.exception.BadRequestException;
 import vrs.rental_ms.exception.NotFoundException;
 
@@ -77,6 +78,11 @@ public class RentalControllerAdvice {
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ProblemDetail> handleHandlerMethodValidationException(HandlerMethodValidationException ex) {
         return new ResponseEntity<>(generateProblemDetail(ex, BAD_REQUEST, ex.getMessage()), BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoSuchKeyException.class)
+    public ResponseEntity<ProblemDetail> handleNoSuchKeyException(NoSuchKeyException ex) {
+        return new ResponseEntity<>(generateProblemDetail(ex, NOT_FOUND, ex.getMessage()), NOT_FOUND);
     }
 
     @ExceptionHandler(BadRequestException.class)

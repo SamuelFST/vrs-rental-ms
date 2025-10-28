@@ -1,0 +1,32 @@
+{
+  "id": "68f0415de743ba1a8056e629",
+  "vehicleData": {
+    "id": 27,
+    "brand": "Toyota",
+    "model": "Hilux",
+    "version": "SRX",
+    "year": "2024",
+    "licensePlate": "AAA9999"
+  },
+  "userData": {
+    "id": 1,
+    "name": "AdminUser",
+    "email": "admin@mail.com",
+    "documentNumber": "123.456.789-10",
+    "documentType": "CPF",
+    "userType": "PF"
+  },
+  "finalPrice": 3720.00,
+  "returnedValue": 1860.00,
+  "paymentStatus": "REFUNDED",
+  "startDate": 1757035929000,
+  "endDate": 1757467929000,
+  "receivedBackDate": 1757467929000,
+  "rentalKmDriven": 250.28,
+  "status": "CLOSED",
+  "generatedContract": "AdminUser_OPQ9012_1761090863078.pdf",
+  "ccLastNumbers": "9132",
+  "addressId": 1,
+  "createdAt": "2025-10-16T00:50:37.211+00:00",
+  "updatedAt": "2025-10-21T23:54:22.337+00:00"
+}

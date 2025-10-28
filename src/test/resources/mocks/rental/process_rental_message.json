@@ -1,0 +1,22 @@
+{
+  "rentalId": "68f0415de743ba1a8056e629",
+  "creditCardData": {
+    "number": "4992739871609132",
+    "holderName": "Any Name",
+    "expirationMonth": 1,
+    "expirationYear": 2026,
+    "cvv": "999"
+  },
+  "vehicleId": 27,
+  "addressId": 1,
+  "user": {
+    "id": 1,
+    "name": "AdminUser",
+    "email": "admin@mail.com",
+    "userType": "PF",
+    "group": "ADMIN"
+  },
+  "totalPrice": 3720.00,
+  "documentType": "CPF",
+  "documentNumber": "PF"
+}

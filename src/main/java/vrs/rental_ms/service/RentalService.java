@@ -36,8 +36,8 @@ import java.util.Optional;
 
 import static vrs.rental_ms.constants.Constants.BIG_DECIMAL_ZERO;
 import static vrs.rental_ms.constants.Constants.PAYMENT_FACTOR;
-import static vrs.rental_ms.enums.ErrorMessages.RENTAL_NOT_FOUND;
-import static vrs.rental_ms.enums.ErrorMessages.VEHICLE_NOT_AVAILABLE;
+import static vrs.rental_ms.enums.ErrorMessages.*;
+import static vrs.rental_ms.enums.RentalStatus.CLOSED;
 import static vrs.rental_ms.enums.VehicleStatus.AVAILABLE;
 
 @Slf4j
@@ -86,9 +86,12 @@ public class RentalService {
     }
 
     public RentalResponseDTO finishRental(final String id, final RentalFinishRequestDTO rentalFinishRequestDTO) {
-        var rental = rentalRepository.save(this.findRentalDocumentById(id)
-                .setStatus(RentalStatus.PROCESSING_CLOSING)
-                .setUpdatedAt(new Date()));
+        var rental = Optional.of(this.findRentalDocumentById(id))
+                .filter(rentalDocument -> !rentalDocument.getStatus().equals(CLOSED))
+                .map(rentalDocument -> rentalRepository.save(rentalDocument
+                        .setStatus(RentalStatus.PROCESSING_CLOSING)
+                        .setUpdatedAt(new Date())))
+                .orElseThrow(() -> new BadRequestException(RENTAL_ALREADY_CLOSED.getMessage()));
 
         rentalProducer.sendToFinishRentalQueue(rentalMapper.toRentalFinishMessageDTO(id, rentalFinishRequestDTO));
 
@@ -138,7 +141,7 @@ public class RentalService {
         var rentalStatus = Optional.ofNullable(paymentResponseDTO)
                 .map(PaymentResponseDTO::getStatus)
                 .map(RentalStatus::fromPaymentStatus)
-                .orElse(RentalStatus.CLOSED);
+                .orElse(CLOSED);
 
         rental
                 .setStatus(rentalStatus)

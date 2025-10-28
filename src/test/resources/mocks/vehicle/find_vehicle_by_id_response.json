@@ -1,0 +1,28 @@
+{
+  "id": 27,
+  "brand": {
+    "id": 4,
+    "name": "Toyota"
+  },
+  "model": {
+    "id": 10,
+    "name": "Hilux"
+  },
+  "version": {
+    "id": 12,
+    "name": "SRX",
+    "engineType": "2.8 Diesel"
+  },
+  "category": {
+    "id": 4,
+    "name": "UTILITY"
+  },
+  "year": "2024",
+  "type": "TRUCK",
+  "seats": 5,
+  "status": "AVAILABLE",
+  "priceBrl": 310.00,
+  "kmDriven": 5856.44,
+  "licensePlate": "AAA9999",
+  "imgUrl": null
+}

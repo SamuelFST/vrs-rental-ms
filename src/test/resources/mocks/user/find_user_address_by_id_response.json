@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "street": "Rua Test",
+  "number": "404",
+  "complement": "Prox. ao BAD REQUEST",
+  "neighborhood": "Bairro HTTP",
+  "city": "Spring City",
+  "state": "Java State",
+  "code": "00000-000",
+  "contactPhone": "5511987654321",
+  "country": "br"
+}

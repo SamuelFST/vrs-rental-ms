@@ -1,0 +1,20 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
+rental-ms:
+  aws:
+    s3:
+      accessKey: any-key
+      secretKey: any-key
+      region: us-west-2
+      auto: false
+      endpoint: http://localhost
+      bucketName: my-bucket
+      exposureEndpoint: http://localhost
+  payment:
+    api-key: my-api-key
+    allowed-payment-method: credit_card
+    allowed-installments: 1
+    late-fee-multiplier: 1.20

@@ -54,7 +54,7 @@ public class FileService {
         rentalService.updateRentalWithGeneratedContract(rental.getId(), pdfName);
     }
 
-    public static byte[] generateRentalPdf(final RentalResponseDTO rentalResponseDTO) {
+    private static byte[] generateRentalPdf(final RentalResponseDTO rentalResponseDTO) {
         var baos = new ByteArrayOutputStream();
         var writer = new PdfWriter(baos);
 

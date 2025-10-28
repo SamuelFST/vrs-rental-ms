@@ -18,7 +18,8 @@ public enum ErrorMessages {
     VEHICLE_VERSION_NOT_FOUND("VehicleVersion not found with given ID"),
     VEHICLE_NOT_FOUND("Vehicle not found with given ID"),
     VEHICLE_NOT_AVAILABLE("Vehicle not available for rental"),
-    RENTAL_NOT_FOUND("Rental not found with given ID");
+    RENTAL_NOT_FOUND("Rental not found with given ID"),
+    RENTAL_ALREADY_CLOSED("Rental with given ID already closed");
 
     private final String message;
 }

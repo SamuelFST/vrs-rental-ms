@@ -1,0 +1,16 @@
+{
+  "vehicleId": 27,
+  "userId": 1,
+  "addressId": 1,
+  "startDate": 1757035929000,
+  "endDate": 1757467929000,
+  "creditCardData": {
+    "number": "4992739871609132",
+    "holderName": "Any Name",
+    "expirationMonth": 1,
+    "expirationYear": 2026,
+    "cvv": "999"
+  },
+  "documentType": "CPF",
+  "documentNumber": "123.456.789-10"
+}

@@ -67,6 +67,10 @@ public class RentalService {
         return rentalMapper.toRentalResponseDTO(this.findRentalDocumentById(rentalId));
     }
 
+    public RentalPriceResponse calculateRentalPrice(final Long vehicleId, final Long startDate, final Long endDate) {
+        return new RentalPriceResponse(getFinalPrice(getRentalVehicle(vehicleId).getPriceBrl(), startDate, endDate));
+    }
+
     public RentalResponseDTO createRental(final RentalRequestDTO rentalRequestDTO) {
         var vehicle = getRentalVehicle(rentalRequestDTO.getVehicleId());
         var user = getRentalUser(rentalRequestDTO.getUserId());

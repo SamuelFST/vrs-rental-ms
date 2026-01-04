@@ -10,10 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import vrs.rental_ms.config.security.IsAdmin;
 import vrs.rental_ms.config.security.IsClient;
-import vrs.rental_ms.dto.rental.RentalFilterDTO;
-import vrs.rental_ms.dto.rental.RentalFinishRequestDTO;
-import vrs.rental_ms.dto.rental.RentalRequestDTO;
-import vrs.rental_ms.dto.rental.RentalResponseDTO;
+import vrs.rental_ms.dto.rental.*;
 import vrs.rental_ms.service.RentalService;
 
 @RestController
@@ -39,6 +36,15 @@ public class RentalController {
     @Operation(summary = "Search for a specific Rental by it's Rental ID")
     public RentalResponseDTO findRentalById(@PathVariable String id) {
         return rentalService.findRentalById(id);
+    }
+
+    @IsClient
+    @GetMapping("/price")
+    @Operation(summary = "Calculate the price of a new Rental")
+    public RentalPriceResponse calculateRentalPrice(@RequestParam Long vehicleId,
+                                                    @RequestParam Long startDate,
+                                                    @RequestParam Long endDate) {
+        return rentalService.calculateRentalPrice(vehicleId, startDate, endDate);
     }
 
     @IsClient

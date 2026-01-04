@@ -151,6 +151,24 @@ class RentalControllerTest extends RentalMsApplicationTests {
 
     @Test
     @WithMockUser(roles = Constants.ADMIN, username = "admin@mail.com")
+    void calculateRentalPriceWithSuccess() throws Exception {
+        var vehicleResponse = readJsonFileAndConvert("mocks/vehicle/find_vehicle_by_id_response.json", VehicleResponseDTO.class);
+
+        when(vehicleClient.findVehicleById(anyLong())).thenReturn(vehicleResponse);
+
+        doRequest(get("/rentals/price")
+                .param("vehicleId", "27")
+                .param("startDate", "1757035929000")
+                .param("endDate", "1757467929000")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").value(3720.00));
+    }
+
+    @Test
+    @WithMockUser(roles = Constants.ADMIN, username = "admin@mail.com")
     void createRentalWithSuccess() throws Exception {
         var request = readJsonFileAndConvert("mocks/rental/create_rental_request.json", RentalRequestDTO.class);
         var vehicleResponse = readJsonFileAndConvert("mocks/vehicle/find_vehicle_by_id_response.json", VehicleResponseDTO.class);

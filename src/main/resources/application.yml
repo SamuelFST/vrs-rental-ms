@@ -45,7 +45,7 @@ rental-ms:
       service-id: ${RENTAL_SERVICE_ID:rental-ms@vrs.com}
       service-secret: ${RENTAL_SERVICE_SECRET:vrs-rental-ms@rental_secret}
       base-url: ${SECURITY_BASE_URL:http://localhost:8041/auth}
-      validate-token: /validate
+      validate-token: /auth/validate
       generate-token-service: /login/service
     security-client:
       base-url: ${SECURITY_BASE_URL:http://localhost:8041}

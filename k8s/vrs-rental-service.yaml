@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vrs-rental
+spec:
+  selector:
+    app: vrs-rental
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8043

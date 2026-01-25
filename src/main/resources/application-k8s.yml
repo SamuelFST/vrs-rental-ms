@@ -14,9 +14,9 @@ spring:
     name: rental_ms
   data:
     mongodb:
-      uri: mongodb://${MONGODB_USER:admin}:${MONGODB_PASSWORD:adminSecret123}@${MONGODB_HOST:localhost}:${MONGODB_PORT:27027}/${MONGODB_NAME:vrs_rental}?authSource=admin
+      uri: mongodb://${MONGODB_USER:root}:${MONGODB_PASSWORD:root}@${MONGODB_HOST:vrs-rental-mongo}:${MONGODB_PORT:27017}/${MONGODB_NAME:vrs_rental}?authSource=admin
   rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
+    host: ${RABBITMQ_HOST:vrs-rabbitmq}
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
@@ -44,15 +44,15 @@ rental-ms:
     security-auth-client:
       service-id: ${RENTAL_SERVICE_ID:rental-ms@vrs.com}
       service-secret: ${RENTAL_SERVICE_SECRET:vrs-rental-ms@rental_secret}
-      base-url: ${SECURITY_BASE_URL:http://localhost:8041}
+      base-url: ${SECURITY_BASE_URL:http://vrs-security:80}
       validate-token: /auth/validate
       generate-token-service: /auth/login/service
     security-client:
-      base-url: ${SECURITY_BASE_URL:http://localhost:8041}
+      base-url: ${SECURITY_BASE_URL:http://vrs-security:80}
       find-user-by-id: /users/{userId}
       find-user-address-by-id: /users/{userId}/addresses/{addressId}
     vehicle-client:
-      base-url: ${VEHICLE_BASE_URL:http://localhost:8042}
+      base-url: ${VEHICLE_BASE_URL:http://vrs-vehicle:80}
       find-vehicle-by-id: /vehicles/{vehicleId}
       update-vehicle-status-by-id: /vehicles/{id}/status/{vehicleStatus}
       update-vehicle-rental-data: /vehicles/{id}/rental-data
@@ -66,9 +66,9 @@ rental-ms:
       secretKey: ${AWS_SECRET_ACCESS_KEY:mykey}
       region: ${AWS_REGION:us-west-2}
       auto: false
-      endpoint: ${AWS_S3_ENDPOINT:http://s3.localhost.localstack.cloud:4567}
-      bucketName: ${AWS_S3_BUCKET:rentals-bucket}
-      exposureEndpoint: ${AWS_S3_EXPOSURE_ENDPOINT:http://s3.localhost.localstack.cloud:4567}
+      endpoint: http://vrs-localstack-service:4566
+      bucketName: rentals-bucket
+      exposureEndpoint: http://s3.vrs.cloud
   payment:
     api-key: ${PAYMENT_API_KEY:my-api-key}
     allowed-payment-method: credit_card

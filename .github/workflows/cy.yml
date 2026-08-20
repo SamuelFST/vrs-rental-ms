@@ -8,13 +8,16 @@ on:
       - "fix/*"
   pull_request:
     branches:
-     - "master"
+      - "master"
+
 jobs:
   build:
+    name: Build & Tests
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
     steps:
-      - name: Copy source code
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Java Configuration (JDK 17)
@@ -29,3 +32,64 @@ jobs:
 
       - name: Run Build With Tests
         run: ./gradlew build
+
+  super-linter:
+    name: Super-Linter
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Run Super-Linter
+        uses: super-linter/super-linter/slim@v8.7.0
+        env:
+          VALIDATE_JAVA: true
+          VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_YAML: true
+          VALIDATE_JSON: true
+
+  pmd:
+    name: PMD Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Java Configuration (JDK 17)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Gradle execution permission
+        run: chmod +x ./gradlew
+
+      - name: Run PMD
+        run: ./gradlew pmdMain pmdTest
+
+  dependency-check:
+    name: Dependency Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Java Configuration (JDK 17)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Gradle execution permission
+        run: chmod +x ./gradlew
+
+      - name: Run OWASP Dependency-Check
+        run: ./gradlew dependencyCheckAnalyze

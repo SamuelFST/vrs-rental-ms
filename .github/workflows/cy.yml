@@ -41,10 +41,14 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Run Super-Linter
         uses: super-linter/super-linter/slim@v8.7.0
         env:
+          VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVA: true
           VALIDATE_GITHUB_ACTIONS: true
           VALIDATE_YAML: true

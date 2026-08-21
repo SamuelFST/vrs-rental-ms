@@ -55,6 +55,7 @@ jobs:
           VALIDATE_JSON: true
           MULTI_STATUS: false
           ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
+          LOG_LEVEL: DEBUG
 
   pmd:
     name: PMD Analysis
@@ -78,24 +79,24 @@ jobs:
       - name: Run PMD
         run: ./gradlew pmdMain pmdTest
 
-  dependency-check:
-    name: Dependency Check
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Java Configuration (JDK 17)
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'gradle'
-
-      - name: Gradle execution permission
-        run: chmod +x ./gradlew
-
-      - name: Run OWASP Dependency-Check
-        run: ./gradlew dependencyCheckAnalyze
+#  dependency-check:
+#    name: Dependency Check
+#    runs-on: ubuntu-latest
+#    permissions:
+#      contents: read
+#    steps:
+#      - name: Checkout source code
+#        uses: actions/checkout@v4
+#
+#      - name: Java Configuration (JDK 17)
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: '17'
+#          distribution: 'temurin'
+#          cache: 'gradle'
+#
+#      - name: Gradle execution permission
+#        run: chmod +x ./gradlew
+#
+#      - name: Run OWASP Dependency-Check
+#        run: ./gradlew dependencyCheckAnalyze

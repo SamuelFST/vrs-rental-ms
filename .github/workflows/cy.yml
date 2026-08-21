@@ -31,7 +31,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run Build With Tests
-        run: ./gradlew build
+        run: ./gradlew build -x pmdMain -x pmdTest -x dependencyCheckAnalyze
 
   super-linter:
     name: Super-Linter

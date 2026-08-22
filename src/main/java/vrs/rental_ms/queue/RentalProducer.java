@@ -11,18 +11,20 @@ import static vrs.rental_ms.config.rabbit.RabbitMQConfiguration.PROCESS_RENTAL_Q
 
 @Slf4j
 @Service
-public class RentalProducer extends QueueProducer {
+public class RentalProducer {
+
+    private final QueueProducer queueProducer;
 
     public RentalProducer(RabbitTemplate rabbitTemplate) {
-        super(rabbitTemplate);
+        queueProducer = new QueueProducer(rabbitTemplate);
     }
 
     public void sendToProcessRentalQueue(final RentalMessageDTO rentalMessageDTO) {
-        sendMessage(PROCESS_RENTAL_QUEUE, rentalMessageDTO);
+        queueProducer.sendMessage(PROCESS_RENTAL_QUEUE, rentalMessageDTO);
     }
 
     public void sendToFinishRentalQueue(final RentalFinishMessageDTO rentalFinishMessageDTO) {
-        sendMessage(FINISH_RENTAL_QUEUE, rentalFinishMessageDTO);
+        queueProducer.sendMessage(FINISH_RENTAL_QUEUE, rentalFinishMessageDTO);
     }
 
 }

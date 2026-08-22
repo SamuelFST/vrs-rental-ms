@@ -46,6 +46,11 @@ class RentalControllerTest extends RentalMsApplicationTests {
 
     private Rental rental;
 
+    private static final String ADMIN_EMAIL = "admin@mail.com";
+    private static final String STATUS_RESPONSE_PATH = "$.status";
+    private static final String TIMESTAMP_RESPONSE_PATH = "$.timestamp";
+    private static final String DETAIL_RESPONSE_PATH = "$.detail";
+
     @BeforeEach
     void setup() throws IOException {
         rental = readJsonFileAndConvert("mocks/rental/rental_document.json", Rental.class);
@@ -58,7 +63,7 @@ class RentalControllerTest extends RentalMsApplicationTests {
         when(mongoTemplate.count(any(Query.class), any(Class.class))).thenReturn(1L);
 
         doRequest(get("/rentals")
-                .param("email", "admin@mail.com")
+                .param("email", ADMIN_EMAIL)
                 .param("status", "CLOSED")
                 .param("licensePlate", "AAA9999")
                 .param("page", "0")
@@ -105,7 +110,7 @@ class RentalControllerTest extends RentalMsApplicationTests {
                 .andExpect(jsonPath("$.id").value(rental.getId()))
                 .andExpect(jsonPath("$.paymentStatus").value(rental.getPaymentStatus().toString()))
                 .andExpect(jsonPath("$.rentalKmDriven").value(rental.getRentalKmDriven().toString()))
-                .andExpect(jsonPath("$.status").value(rental.getStatus().toString()))
+                .andExpect(jsonPath(STATUS_RESPONSE_PATH).value(rental.getStatus().toString()))
                 .andExpect(jsonPath("$.generatedContract").value(rental.getGeneratedContract()))
                 .andExpect(jsonPath("$.ccLastNumbers").value(rental.getCcLastNumbers()))
                 .andExpect(jsonPath("$.addressId").value(rental.getAddressId()))
@@ -136,13 +141,13 @@ class RentalControllerTest extends RentalMsApplicationTests {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.RENTAL_NOT_FOUND.getMessage()));
+                .andExpect(jsonPath(TIMESTAMP_RESPONSE_PATH).exists())
+                .andExpect(jsonPath(STATUS_RESPONSE_PATH).value(404))
+                .andExpect(jsonPath(DETAIL_RESPONSE_PATH).value(ErrorMessages.RENTAL_NOT_FOUND.getMessage()));
     }
 
     @Test
-    @WithMockUser(roles = Constants.ADMIN, username = "admin@mail.com")
+    @WithMockUser(roles = Constants.ADMIN, username = ADMIN_EMAIL)
     void calculateRentalPriceWithSuccess() throws Exception {
         var vehicleResponse = readJsonFileAndConvert("mocks/vehicle/find_vehicle_by_id_response.json", VehicleResponseDTO.class);
 
@@ -160,7 +165,7 @@ class RentalControllerTest extends RentalMsApplicationTests {
     }
 
     @Test
-    @WithMockUser(roles = Constants.ADMIN, username = "admin@mail.com")
+    @WithMockUser(roles = Constants.ADMIN, username = ADMIN_EMAIL)
     void createRentalWithSuccess() throws Exception {
         var request = readJsonFileAndConvert("mocks/rental/create_rental_request.json", RentalRequestDTO.class);
         var vehicleResponse = readJsonFileAndConvert("mocks/vehicle/find_vehicle_by_id_response.json", VehicleResponseDTO.class);
@@ -180,12 +185,12 @@ class RentalControllerTest extends RentalMsApplicationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(rental.getId()))
-                .andExpect(jsonPath("$.status").value(rental.getStatus().toString()))
+                .andExpect(jsonPath(STATUS_RESPONSE_PATH).value(rental.getStatus().toString()))
                 .andExpect(jsonPath("$.paymentStatus").value(rental.getPaymentStatus().toString()));
     }
 
     @Test
-    @WithMockUser(roles = Constants.ADMIN, username = "admin@mail.com")
+    @WithMockUser(roles = Constants.ADMIN, username = ADMIN_EMAIL)
     void createRentalWithVehicleNotAvailableError() throws Exception {
         var request = readJsonFileAndConvert("mocks/rental/create_rental_request.json", RentalRequestDTO.class);
         var vehicleResponse = readJsonFileAndConvert("mocks/vehicle/find_vehicle_by_id_response.json", VehicleResponseDTO.class);
@@ -199,9 +204,9 @@ class RentalControllerTest extends RentalMsApplicationTests {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.VEHICLE_NOT_AVAILABLE.getMessage()));
+                .andExpect(jsonPath(TIMESTAMP_RESPONSE_PATH).exists())
+                .andExpect(jsonPath(STATUS_RESPONSE_PATH).value(400))
+                .andExpect(jsonPath(DETAIL_RESPONSE_PATH).value(ErrorMessages.VEHICLE_NOT_AVAILABLE.getMessage()));
     }
 
 
@@ -222,7 +227,7 @@ class RentalControllerTest extends RentalMsApplicationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(rental.getId()))
-                .andExpect(jsonPath("$.status").value(rental.getStatus().toString()));
+                .andExpect(jsonPath(STATUS_RESPONSE_PATH).value(rental.getStatus().toString()));
     }
 
     @Test
@@ -239,9 +244,9 @@ class RentalControllerTest extends RentalMsApplicationTests {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.RENTAL_ALREADY_CLOSED.getMessage()));
+                .andExpect(jsonPath(TIMESTAMP_RESPONSE_PATH).exists())
+                .andExpect(jsonPath(STATUS_RESPONSE_PATH).value(400))
+                .andExpect(jsonPath(DETAIL_RESPONSE_PATH).value(ErrorMessages.RENTAL_ALREADY_CLOSED.getMessage()));
     }
 
     @Test
@@ -257,9 +262,9 @@ class RentalControllerTest extends RentalMsApplicationTests {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.RENTAL_NOT_FOUND.getMessage()));
+                .andExpect(jsonPath(TIMESTAMP_RESPONSE_PATH).exists())
+                .andExpect(jsonPath(STATUS_RESPONSE_PATH).value(404))
+                .andExpect(jsonPath(DETAIL_RESPONSE_PATH).value(ErrorMessages.RENTAL_NOT_FOUND.getMessage()));
     }
 
 }

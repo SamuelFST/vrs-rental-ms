@@ -9,14 +9,16 @@ import static vrs.rental_ms.config.rabbit.RabbitMQConfiguration.FILE_RENTAL_QUEU
 
 @Slf4j
 @Service
-public class FileProducer extends QueueProducer {
+public class FileProducer {
+
+    private final QueueProducer queueProducer;
 
     public FileProducer(RabbitTemplate rabbitTemplate) {
-        super(rabbitTemplate);
+        queueProducer = new QueueProducer(rabbitTemplate);
     }
 
     public void sendToGenerateRentalFile(final RentalFileMessageDTO rentalFileMessageDTO) {
-        sendMessage(FILE_RENTAL_QUEUE, rentalFileMessageDTO);
+        queueProducer.sendMessage(FILE_RENTAL_QUEUE, rentalFileMessageDTO);
     }
 
 }

@@ -24,6 +24,8 @@ public class PaymentService {
     private final PaymentProperties paymentProperties;
     private final PaymentMapper paymentMapper;
 
+    private static final Long ZERO = 0L;
+
     public PaymentResponseDTO processPayment(final RentalMessageDTO rentalMessageDTO,
                                              final UserAddressResponseDTO userAddressResponseDTO) {
         return paymentClient.payRental(paymentMapper.toPaymentRequestDTO(rentalMessageDTO, userAddressResponseDTO, paymentProperties));
@@ -40,13 +42,13 @@ public class PaymentService {
     public BigDecimal calculateValueToBeReturned(final Long daysCount, final BigDecimal finalPrice) {
         var deductiblePrice = finalPrice.divide(PAYMENT_FACTOR, 2, RoundingMode.HALF_UP);
 
-        if (daysCount > 0L) {
+        if (daysCount > ZERO) {
             var factor = paymentProperties.getLateFeeMultiplier()
                     .pow(daysCount.intValue());
 
             var calculatedValue = deductiblePrice.multiply(factor).setScale(2, RoundingMode.HALF_UP);
 
-            if (calculatedValue.compareTo(finalPrice) >= 0) {
+            if (calculatedValue.compareTo(finalPrice) >= ZERO) {
                 return BIG_DECIMAL_ZERO;
             }
 

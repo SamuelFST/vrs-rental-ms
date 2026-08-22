@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 public class RentalMsApplicationTests {
 
 	@Autowired
@@ -40,7 +41,7 @@ public class RentalMsApplicationTests {
 
 	@Test
 	void contextLoadsWithSuccess(ApplicationContext context) {
-		assertNotNull(context);
+		assertNotNull(context, "The application context should load with success");
 	}
 
 	public ResultActions doRequest(RequestBuilder requestBuilder) throws Exception {

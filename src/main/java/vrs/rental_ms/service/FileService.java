@@ -30,6 +30,8 @@ public class FileService {
     private final RentalService rentalService;
     private final S3Service s3Service;
 
+    private static final String LABEL_VALUE_PLACEHOLDER = "%s: %s";
+
     public FileDataDTO getRentalPdfDownload(final String rentalId) {
         var rental = rentalService.findRentalDocumentById(rentalId);
         var fileStream = s3Service.downloadFile(rental.getGeneratedContract());
@@ -59,7 +61,7 @@ public class FileService {
         var writer = new PdfWriter(baos);
 
         try (var pdf = new PdfDocument(writer); var document = new Document(pdf)) {
-            var table = createTable(new float[]{1, 10});
+            var table = createTable(1, 10);
 
             addHeaderCell(table, "VRS", TextAlignment.LEFT, 24);
             addHeaderCell(table, "Registro de Locação", TextAlignment.CENTER, 18);
@@ -67,15 +69,51 @@ public class FileService {
 
             addDocumentParagraph(document, "", 10, false);
             addDocumentParagraph(document, "Dados do cliente: ", 10, true);
-            addDocumentParagraph(document, "%s: %s".formatted("NOME", rentalResponseDTO.getUserData().getName()), 8, false);
-            addDocumentParagraph(document, "%s: %s".formatted("E-MAIL", rentalResponseDTO.getUserData().getEmail()), 8, false);
-            addDocumentParagraph(document, "%s: %s".formatted("TIPO DE CLIENTE", rentalResponseDTO.getUserData().getUserType().getDescription()), 8, false);
-            addDocumentParagraph(document, "%s: %s".formatted("DOCUMENTO INFORMADO", rentalResponseDTO.getUserData().getDocumentNumber()), 8, false);
-            addDocumentParagraph(document, "%s: %s".formatted("TIPO DO DOCUMENTO", rentalResponseDTO.getUserData().getDocumentType()), 8, false);
+            addDocumentParagraph(
+                    document,
+                    LABEL_VALUE_PLACEHOLDER.formatted("NOME", rentalResponseDTO.getUserData().getName()),
+                    8,
+                    false
+            );
+            addDocumentParagraph(
+                    document,
+                    LABEL_VALUE_PLACEHOLDER.formatted("E-MAIL", rentalResponseDTO.getUserData().getEmail()),
+                    8,
+                    false
+            );
+            addDocumentParagraph(
+                    document,
+                    LABEL_VALUE_PLACEHOLDER
+                            .formatted(
+                                    "TIPO DE CLIENTE",
+                                    rentalResponseDTO.getUserData().getUserType().getDescription()
+                            ),
+                    8,
+                    false
+            );
+            addDocumentParagraph(
+                    document,
+                    LABEL_VALUE_PLACEHOLDER
+                            .formatted(
+                                    "DOCUMENTO INFORMADO",
+                                    rentalResponseDTO.getUserData().getDocumentNumber()
+                            ),
+                    8,
+                    false
+            );
+            addDocumentParagraph(
+                    document,
+                    LABEL_VALUE_PLACEHOLDER.formatted(
+                            "TIPO DO DOCUMENTO",
+                            rentalResponseDTO.getUserData().getDocumentType()
+                    ),
+                    8,
+                    false
+            );
 
             addInvisibleDivider(document);
 
-            table = createTable(new float[]{ 1, 1, 1, 1, 1 });
+            table = createTable(1, 1, 1, 1, 1);
             addDocumentParagraph(document, "Dados do veículo: ", 10, true);
             addTableHeaderCells(table, List.of("MARCA", "MODELO", "VERSÃO", "ANO", "PLACA"));
             addTableCellsValues(table, List.of(
@@ -88,7 +126,7 @@ public class FileService {
 
             addInvisibleDivider(document);
 
-            table = createTable(new float[]{1, 1, 1, 1, 1, 1});
+            table = createTable(1, 1, 1, 1, 1, 1);
             addDocumentParagraph(document, "Dados da locação: ", 10, true);
             addTableHeaderCells(table, List.of("DATA INÍCIO", "DATA FIM", "DATA DEVOLUÇÃO", "VALOR PAGO", "VALOR ESTORNADO", "DISTÂNCIA PERCORRIDA"));
             addTableCellsValues(table, List.of(
@@ -108,19 +146,19 @@ public class FileService {
         return baos.toByteArray();
     }
 
-    private static Table createTable(final float[] values) {
+    private static Table createTable(final float... values) {
         return new Table(UnitValue.createPercentArray(values))
                 .setWidth(UnitValue.createPercentValue(100));
     }
 
     private static void addTableHeaderCells(final Table table, final List<String> headers) {
-        for (var header: headers) {
+        for (var header : headers) {
             table.addHeaderCell(createTableCell(header).setBackgroundColor(new DeviceGray(0.85f)));
         }
     }
 
     private static void addTableCellsValues(final Table table, final List<String> values) {
-        for (var value: values) {
+        for (var value : values) {
             table.addCell(createTableCell(value));
         }
     }

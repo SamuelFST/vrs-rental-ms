@@ -20,11 +20,9 @@ public class FileConsumer {
     public void fileRentalQueueListener(RentalFileMessageDTO message) {
         log.info("message received in queue {}: {}", FILE_RENTAL_QUEUE, message);
 
-        try {
-            fileService.generateRentalFile(message);
-        } catch (Exception ex) {
-            log.error("Exception occurred when generating rental file {}: {}", message.getRentalId(), ex.getMessage(), ex);
-        }
+        fileService.generateRentalFile(message);
+
+        log.info("Rental file generated successfully for message: {}", message);
     }
 
 }

@@ -27,7 +27,6 @@ import vrs.rental_ms.util.UserSecurityUtil;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -94,7 +93,7 @@ public class RentalService {
                 .filter(rentalDocument -> rentalDocument.getStatus() != CLOSED)
                 .map(rentalDocument -> rentalRepository.save(rentalDocument
                         .setStatus(RentalStatus.PROCESSING_CLOSING)
-                        .setUpdatedAt(OffsetDateTime.now())))
+                        .setUpdatedAt(Instant.now())))
                 .orElseThrow(() -> new BadRequestException(RENTAL_ALREADY_CLOSED.getMessage()));
 
         rentalProducer.sendToFinishRentalQueue(rentalMapper.toRentalFinishMessageDTO(id, rentalFinishRequestDTO));
@@ -128,7 +127,7 @@ public class RentalService {
     public void updateRentalWithError(final String rentalId) {
         rentalRepository.save(this.findRentalDocumentById(rentalId)
                 .setStatus(RentalStatus.ERROR)
-                .setUpdatedAt(OffsetDateTime.now()));
+                .setUpdatedAt(Instant.now()));
     }
 
     public void updateRentalWithGeneratedContract(final String rentalId, final String filename) {
@@ -149,7 +148,7 @@ public class RentalService {
 
         rental
                 .setStatus(rentalStatus)
-                .setUpdatedAt(OffsetDateTime.now());
+                .setUpdatedAt(Instant.now());
 
         Optional.ofNullable(paymentResponseDTO).ifPresent(paymentResponse -> {
             rental.setPaymentStatus(paymentResponse.getStatus());

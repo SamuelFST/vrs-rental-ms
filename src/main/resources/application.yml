@@ -20,6 +20,9 @@ spring:
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
+    listener:
+      simple:
+        default-requeue-rejected: false
   cloud:
     openfeign:
       circuitbreaker:
@@ -60,6 +63,12 @@ rental-ms:
       base-url: ${PAYMENT_BASE_URL:http://localhost:9999}
       pay-rental: /transactions
       refund-rental: /transactions/{transactionId}/refund
+  rabbit:
+    retry:
+      initial-interval: 2s
+      multiplier: 2
+      max-interval: 30s
+      max-retries: 3
   aws:
     s3:
       accessKey: ${AWS_ACCESS_KEY_ID:myKey}

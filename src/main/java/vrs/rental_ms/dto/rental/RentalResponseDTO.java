@@ -7,8 +7,7 @@ import vrs.rental_ms.enums.PaymentStatus;
 import vrs.rental_ms.enums.RentalStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 @Data
 public class RentalResponseDTO {
@@ -27,7 +26,7 @@ public class RentalResponseDTO {
     private String generatedContract;
     private String ccLastNumbers;
     private Long addressId;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
 }

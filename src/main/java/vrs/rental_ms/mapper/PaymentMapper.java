@@ -9,6 +9,7 @@ import vrs.rental_ms.enums.CustomerDocumentType;
 
 import java.util.List;
 
+@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 @Mapper(componentModel = "spring")
 public interface PaymentMapper {
 

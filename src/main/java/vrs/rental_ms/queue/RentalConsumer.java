@@ -21,25 +21,13 @@ public class RentalConsumer {
     @RabbitListener(queues = PROCESS_RENTAL_QUEUE)
     public void processRentalQueueListener(RentalMessageDTO message) {
         logMessage(PROCESS_RENTAL_QUEUE, message);
-
-        try {
-            rentalService.processRental(message);
-        } catch (Exception ex) {
-            rentalService.updateRentalWithError(message.getRentalId());
-            log.error("Exception occurred when processing rental {}: {}", message.getRentalId(), ex.getMessage(), ex);
-        }
+        rentalService.processRental(message);
     }
 
     @RabbitListener(queues = FINISH_RENTAL_QUEUE)
-    public void processRentalQueueListener(RentalFinishMessageDTO message) {
+    public void processRentalFinishQueueListener(RentalFinishMessageDTO message) {
         logMessage(FINISH_RENTAL_QUEUE, message);
-
-        try {
-            rentalService.processRentalFinish(message);
-        } catch (Exception ex) {
-            rentalService.updateRentalWithError(message.getRentalId());
-            log.error("Exception occurred when finishing rental {}: {}", message.getRentalId(), ex.getMessage(), ex);
-        }
+        rentalService.processRentalFinish(message);
     }
 
     private void logMessage(final String queueName, final Object message) {

@@ -11,17 +11,21 @@ import vrs.rental_ms.dto.vehicle.VehicleResponseDTO;
 import vrs.rental_ms.enums.VehicleStatus;
 import vrs.rental_ms.interceptor.SecurityTokenInterceptor;
 
-@FeignClient(name = "VehicleClient", url = "${rental-ms.integration.vehicle-client.base-url}", configuration = SecurityTokenInterceptor.class)
+@FeignClient(
+        name = "VehicleClient",
+        url = "${rental-ms.integration.vehicle-client.base-url}",
+        configuration = SecurityTokenInterceptor.class
+)
 public interface VehicleClient {
 
     @GetMapping("${rental-ms.integration.vehicle-client.find-vehicle-by-id}")
-    VehicleResponseDTO findVehicleById(@PathVariable final Long vehicleId);
+    VehicleResponseDTO findVehicleById(@PathVariable Long vehicleId);
 
     @PutMapping("${rental-ms.integration.vehicle-client.update-vehicle-status-by-id}")
-    void updateVehicleStatus(@PathVariable final Long id, @PathVariable final VehicleStatus vehicleStatus);
+    void updateVehicleStatus(@PathVariable Long id, @PathVariable VehicleStatus vehicleStatus);
 
     @PutMapping("${rental-ms.integration.vehicle-client.update-vehicle-rental-data}")
-    void updateVehicleRentalData(@PathVariable final Long id,
-                                 @Valid @RequestBody final VehicleRentalUpdateRequestDTO vehicleRentalUpdateRequestDTO);
+    void updateVehicleRentalData(@PathVariable Long id,
+                                 @Valid @RequestBody VehicleRentalUpdateRequestDTO vehicleRentalUpdateRequestDTO);
 
 }

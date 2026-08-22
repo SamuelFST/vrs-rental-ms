@@ -11,9 +11,9 @@ import vrs.rental_ms.interceptor.SecurityTokenInterceptor;
 public interface SecurityClient {
 
     @GetMapping("${rental-ms.integration.security-client.find-user-by-id}")
-    UserResponseDTO findUserById(@PathVariable final Long userId);
+    UserResponseDTO findUserById(@PathVariable Long userId);
 
     @GetMapping("${rental-ms.integration.security-client.find-user-address-by-id}")
-    UserAddressResponseDTO findUserAddressById(@PathVariable final Long userId, @PathVariable final Long addressId);
+    UserAddressResponseDTO findUserAddressById(@PathVariable Long userId, @PathVariable Long addressId);
 
 }

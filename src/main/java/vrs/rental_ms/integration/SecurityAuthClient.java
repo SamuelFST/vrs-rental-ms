@@ -10,9 +10,9 @@ import vrs.rental_ms.dto.token.TokenDataDTO;
 public interface SecurityAuthClient {
 
     @PostMapping("${rental-ms.integration.security-auth-client.validate-token}")
-    TokenDataDTO validateToken(@RequestHeader final String accessToken);
+    TokenDataDTO validateToken(@RequestHeader String accessToken);
 
     @PostMapping("${rental-ms.integration.security-auth-client.generate-token-service}")
-    LoginResponseDTO generateTokenForService(@RequestBody final LoginServiceRequestDTO loginServiceRequestDTO);
+    LoginResponseDTO generateTokenForService(@RequestBody LoginServiceRequestDTO loginServiceRequestDTO);
 
 }

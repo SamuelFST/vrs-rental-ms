@@ -16,10 +16,10 @@ import vrs.rental_ms.integration.fallback.PaymentClientFallback;
 public interface PaymentClient {
 
     @PostMapping("${rental-ms.integration.payment-client.pay-rental}")
-    PaymentResponseDTO payRental(@RequestBody final PaymentRequestDTO paymentRequestDTO);
+    PaymentResponseDTO payRental(@RequestBody PaymentRequestDTO paymentRequestDTO);
 
     @PostMapping("${rental-ms.integration.payment-client.refund-rental}")
-    PaymentResponseDTO refundRental(@PathVariable final String transactionId,
-                                    @RequestBody final RefundRequestDTO RefundRequestDTO);
+    PaymentResponseDTO refundRental(@PathVariable String transactionId,
+                                    @RequestBody RefundRequestDTO RefundRequestDTO);
 
 }

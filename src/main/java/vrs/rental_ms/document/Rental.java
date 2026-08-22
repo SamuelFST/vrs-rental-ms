@@ -13,7 +13,7 @@ import vrs.rental_ms.enums.PaymentStatus;
 import vrs.rental_ms.enums.RentalStatus;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -63,8 +63,8 @@ public class Rental {
     private Long addressId;
 
     @NotNull(message = "The createdAt is required")
-    private Date createdAt;
+    private OffsetDateTime createdAt;
 
-    private Date updatedAt;
+    private OffsetDateTime updatedAt;
 
 }

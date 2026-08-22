@@ -30,7 +30,7 @@ public class RentalControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleGlobalException(Exception ex) {
-        log.error(UNEXPECTED_ERROR.getMessage(), ex);
+        this.logError(UNEXPECTED_ERROR.getMessage(), ex.getMessage(), ex);
 
         return new ResponseEntity<>(generateProblemDetail(ex, INTERNAL_SERVER_ERROR, "Unexpected Error"), INTERNAL_SERVER_ERROR);
     }
@@ -100,7 +100,7 @@ public class RentalControllerAdvice {
     private ProblemDetail generateProblemDetail(final Exception ex,
                                                 final HttpStatus status,
                                                 final String detail) {
-        log.error("An error occurred: {}", ex.getMessage());
+        this.logError("An error occurred: {}", ex.getMessage(), ex);
 
         var problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
         problemDetail.setTitle(status.getReasonPhrase());
@@ -114,6 +114,14 @@ public class RentalControllerAdvice {
         }
 
         return problemDetail;
+    }
+
+    private void logError(final String placeholder,
+                          final String message,
+                          final Exception ex) {
+        if (log.isErrorEnabled()) {
+            log.error(placeholder, message, ex);
+        }
     }
 
 }

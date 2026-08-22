@@ -3,7 +3,6 @@ package vrs.rental_ms.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -21,7 +20,6 @@ import vrs.rental_ms.enums.RentalStatus;
 import vrs.rental_ms.enums.VehicleStatus;
 import vrs.rental_ms.integration.SecurityClient;
 import vrs.rental_ms.integration.VehicleClient;
-import vrs.rental_ms.repository.RentalRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,12 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class RentalControllerTest extends RentalMsApplicationTests {
-
-    @MockitoBean
-    private RentalRepository rentalRepository;
-
-    @MockitoBean
-    private MongoTemplate mongoTemplate;
 
     @MockitoBean
     private VehicleClient vehicleClient;

@@ -8,12 +8,17 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Component
 @AllArgsConstructor
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
@@ -25,7 +30,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         var accessToken = request.getHeader("accessToken");
 
-        if (accessToken == null || accessToken.isEmpty()) {
+        if (!StringUtils.hasText(accessToken)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -33,10 +38,16 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         try {
             SecurityContextHolder.getContext().setAuthentication(authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(null, accessToken)));
-        } catch (Exception ex) {
+        } catch (BadCredentialsException ex) {
             SecurityContextHolder.clearContext();
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("Token authorization error: ".concat(ex.getMessage()));
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
+            return;
+        } catch (AuthenticationServiceException ex) {
+            SecurityContextHolder.clearContext();
+            response.sendError(
+                    HttpStatus.SERVICE_UNAVAILABLE.value(),
+                    "Authentication service unavailable"
+            );
             return;
         }
 

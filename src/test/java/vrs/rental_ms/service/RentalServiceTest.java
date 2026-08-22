@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import vrs.rental_ms.RentalMsApplicationTests;
 import vrs.rental_ms.document.Rental;
@@ -13,7 +12,6 @@ import vrs.rental_ms.dto.rental.RentalMessageDTO;
 import vrs.rental_ms.dto.user.UserAddressResponseDTO;
 import vrs.rental_ms.integration.SecurityClient;
 import vrs.rental_ms.integration.VehicleClient;
-import vrs.rental_ms.repository.RentalRepository;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,12 +23,6 @@ class RentalServiceTest extends RentalMsApplicationTests {
 
     @Autowired
     private RentalService rentalService;
-
-    @MockitoBean
-    private RentalRepository rentalRepository;
-
-    @MockitoBean
-    private MongoTemplate mongoTemplate;
 
     @MockitoBean
     private SecurityClient securityClient;

@@ -33,3 +33,4 @@ spec:
               port: 8043
             initialDelaySeconds: 40
             periodSeconds: 10
+            timeoutSeconds: 10

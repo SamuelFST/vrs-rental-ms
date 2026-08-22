@@ -6,9 +6,16 @@ import vrs.rental_ms.config.validation.ValidCreditCardNumber;
 
 public class CreditCardNumberValidator implements ConstraintValidator<ValidCreditCardNumber, String> {
 
+    private static final int DECIMAL_BASE = 10;
+
+    /**
+     * Validates credit card number using luhn algorithm
+     * @param cardNumber the card number to be validated
+     * @param context the validation context provided by the Bean Validation framework
+     * @return {@code true} if the credit card number is valid; {@code false} otherwise
+     * */
     @Override
     public boolean isValid(String cardNumber, ConstraintValidatorContext context) {
-        // validates credit card number using luhn algorithm
         if (cardNumber == null || cardNumber.isBlank()) {
             return true;
         }
@@ -20,8 +27,8 @@ public class CreditCardNumberValidator implements ConstraintValidator<ValidCredi
             var digit = Character.getNumericValue(cardNumber.charAt(i));
             if (alternate) {
                 digit *= 2;
-                if (digit > 9) {
-                    digit = (digit % 10) + 1;
+                if (digit >= DECIMAL_BASE) {
+                    digit = (digit % DECIMAL_BASE) + 1;
                 }
             }
             sum += digit;

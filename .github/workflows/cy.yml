@@ -1,4 +1,4 @@
-name: VRS Java CI Gradle Spring Boot
+name: VRS Java CI
 
 on:
   push:

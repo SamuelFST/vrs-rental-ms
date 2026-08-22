@@ -34,6 +34,14 @@ management:
   health:
     defaults:
       enabled: true
+  endpoint:
+    health:
+      show-details: always
+      group:
+        readiness:
+          include: "readinessState,mongo"
+      mongo:
+        enabled: true
   endpoints:
     web:
       exposure:

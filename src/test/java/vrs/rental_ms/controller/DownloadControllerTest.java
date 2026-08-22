@@ -1,14 +1,12 @@
 package vrs.rental_ms.controller;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import vrs.rental_ms.RentalMsApplicationTests;
 import vrs.rental_ms.constants.Constants;
 import vrs.rental_ms.document.Rental;
-import vrs.rental_ms.repository.RentalRepository;
 import vrs.rental_ms.service.RentalService;
 import vrs.rental_ms.service.S3Service;
 
@@ -28,12 +26,6 @@ class DownloadControllerTest extends RentalMsApplicationTests {
 
     @MockitoBean
     private S3Service s3Service;
-
-    @MockitoBean
-    private MongoTemplate mongoTemplate;
-
-    @MockitoBean
-    private RentalRepository rentalRepository;
 
     @Test
     @WithMockUser(roles = Constants.ADMIN)

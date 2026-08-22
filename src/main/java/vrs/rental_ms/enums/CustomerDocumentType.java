@@ -19,7 +19,7 @@ public enum CustomerDocumentType {
 
     public static CustomerDocumentType fromUserType(final UserType userType) {
         return Stream.of(values())
-                .filter(type -> userType.equals(type.associatedUserType))
+                .filter(type -> userType == type.associatedUserType)
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalArgumentException("%s %s".formatted("Equivalent CustomerDocumentType not found for UserType", userType)));

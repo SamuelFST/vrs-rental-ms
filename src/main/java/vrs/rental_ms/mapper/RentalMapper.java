@@ -8,10 +8,10 @@ import vrs.rental_ms.dto.user.UserResponseDTO;
 import vrs.rental_ms.dto.vehicle.VehicleResponseDTO;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 
-@Mapper(componentModel = "spring", imports = { Date.class })
+@Mapper(componentModel = "spring", imports = { OffsetDateTime.class })
 public interface RentalMapper {
 
     @AfterMapping
@@ -42,7 +42,7 @@ public interface RentalMapper {
     @Mapping(target = "status", constant = "PENDING")
     @Mapping(target = "paymentStatus", constant = "PROCESSING")
     @Mapping(target = "userData", source = "userResponseDTO")
-    @Mapping(target = "createdAt", expression = "java(new Date())")
+    @Mapping(target = "createdAt", expression = "java(OffsetDateTime.now())")
     Rental toCreateRentalDocument(RentalRequestDTO rentalRequestDTO,
                                   VehicleResponseDTO vehicleResponseDTO,
                                   UserResponseDTO userResponseDTO,

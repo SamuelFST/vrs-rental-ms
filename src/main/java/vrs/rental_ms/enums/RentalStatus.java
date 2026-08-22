@@ -23,7 +23,7 @@ public enum RentalStatus {
         }
 
         return Stream.of(values())
-                .filter(status -> paymentStatus.equals(status.associatedPaymentStatus))
+                .filter(status -> paymentStatus == status.associatedPaymentStatus)
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalArgumentException("%s %s".formatted("Equivalent RentalStatus not found for PaymentStatus", paymentStatus)));

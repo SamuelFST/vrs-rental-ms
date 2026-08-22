@@ -54,6 +54,7 @@ dependencies {
 	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocVersion}"
 	implementation "com.itextpdf:itext7-core:${itextpdfVersion}"
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'software.amazon.awssdk:s3'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -130,10 +131,7 @@ pmd {
 	toolVersion = '7.24.0'
 	consoleOutput = true
 	ignoreFailures = false
-	ruleSets = [
-			'category/java/errorprone.xml',
-			'category/java/bestpractices.xml'
-	]
+	ruleSetFiles = files("$rootDir/.github/linters/pmd-ruleset.xml")
 }
 
 dependencyCheck {

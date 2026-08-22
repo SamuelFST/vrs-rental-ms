@@ -27,10 +27,10 @@ import vrs.rental_ms.util.UserSecurityUtil;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,10 +91,10 @@ public class RentalService {
 
     public RentalResponseDTO finishRental(final String id, final RentalFinishRequestDTO rentalFinishRequestDTO) {
         var rental = Optional.of(this.findRentalDocumentById(id))
-                .filter(rentalDocument -> !rentalDocument.getStatus().equals(CLOSED))
+                .filter(rentalDocument -> rentalDocument.getStatus() != CLOSED)
                 .map(rentalDocument -> rentalRepository.save(rentalDocument
                         .setStatus(RentalStatus.PROCESSING_CLOSING)
-                        .setUpdatedAt(new Date())))
+                        .setUpdatedAt(OffsetDateTime.now())))
                 .orElseThrow(() -> new BadRequestException(RENTAL_ALREADY_CLOSED.getMessage()));
 
         rentalProducer.sendToFinishRentalQueue(rentalMapper.toRentalFinishMessageDTO(id, rentalFinishRequestDTO));
@@ -128,7 +128,7 @@ public class RentalService {
     public void updateRentalWithError(final String rentalId) {
         rentalRepository.save(this.findRentalDocumentById(rentalId)
                 .setStatus(RentalStatus.ERROR)
-                .setUpdatedAt(new Date()));
+                .setUpdatedAt(OffsetDateTime.now()));
     }
 
     public void updateRentalWithGeneratedContract(final String rentalId, final String filename) {
@@ -149,7 +149,7 @@ public class RentalService {
 
         rental
                 .setStatus(rentalStatus)
-                .setUpdatedAt(new Date());
+                .setUpdatedAt(OffsetDateTime.now());
 
         Optional.ofNullable(paymentResponseDTO).ifPresent(paymentResponse -> {
             rental.setPaymentStatus(paymentResponse.getStatus());
@@ -175,7 +175,7 @@ public class RentalService {
 
     private VehicleResponseDTO getRentalVehicle(final Long vehicleId) {
         return Optional.of(vehicleService.findVehicleById(vehicleId))
-                .filter(vehicleResponseDTO -> vehicleResponseDTO.getStatus().equals(AVAILABLE))
+                .filter(vehicleResponseDTO -> vehicleResponseDTO.getStatus() == AVAILABLE)
                 .orElseThrow(() -> new BadRequestException(VEHICLE_NOT_AVAILABLE.getMessage()));
     }
 
